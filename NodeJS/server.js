@@ -6,14 +6,16 @@ import jwt from "jsonwebtoken";                                                 
 import { cartRoutes } from "./Routes/cart.routes.js";                               // Cart-related routes
 import { productRoutes } from "./Routes/product.routes.js";                         // Product-related routes
 import { userRoutes } from "./Routes/user.routes.js";                               // User-related routes
+import { PORT_NUM, MONGO_URI, JWT_SECRET } from "./Constants.js";
+
 
 // Connect to MongoDB
-const uri = 'mongodb://localhost:27017/shoppy-globe';                               // MongoDB connection string
+const uri = MONGO_URI;                                                              // MongoDB connection string
 
 mongoose.connect(uri)
     .then(() => {
         console.log('Connected to MongoDB');
-        initializeDatabase;                                                         // Initialize database with predefined data
+        initializeDatabase();                                                       // Initialize database with predefined data
     })
     .catch(err => {
         console.error('Error connecting to MongoDB', err);
@@ -21,7 +23,7 @@ mongoose.connect(uri)
 
 // Server Initialization
 const app = new express();                                                          // Create an Express application instance
-const PORT = 3000;                                                                  // Define the server port
+const PORT = PORT_NUM;                                                              // Define the server port
 
 // Start the server and listen on the defined port
 app.listen(PORT, () => {
@@ -50,7 +52,7 @@ const authenticateUser = (req, res, next) => {
         return res.status(403).json({ message: "Token is required" });              // Return error if token is missing
     }
 
-    jwt.verify(token, "secretKey", (err, user) => {                                 // Verify token using the secret key
+    jwt.verify(token, JWT_SECRET, (err, user) => {                                 // Verify token using the secret key
         if (err) {
             return res.status(403).json({ message: "Invalid or expired token" });   // Return error if token is invalid
         }

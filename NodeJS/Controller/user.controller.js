@@ -1,4 +1,6 @@
 import User from "../Model/user.model.js";
+import jwt from "jsonwebtoken";   
+import { JWT_SECRET } from "../Constants.js";
 
 export const userRegister = async (req, res) => {
     const { userName, password } = req.body;
@@ -41,7 +43,7 @@ export const userLogin = async (req, res) => {
         }
 
         // Generate JWT token
-        const token = jwt.sign({ userId: user._id, userName: user.userName }, "secretKey", { expiresIn: "15m" });
+        const token = jwt.sign({ userId: user._id, userName: user.userName }, JWT_SECRET, { expiresIn: "1h" });
 
         res.status(200).json({ message: "Login successful", token });
     } catch (error) {
